@@ -1,0 +1,33 @@
+# Ignore node_modules folder
+node_modules/
+
+# Ignore virtual environment (if applicable)
+.venv/
+
+# Ignore specific files
+*.log
+*.tmp
+
+# Exclude all files in a specific directory
+logs/*
+
+# Exclude a specific file
+config.json
+
+# Exclude all files matching a pattern in a directory
+dist/**/*.map
+
+# Exclude the .git directory (though typically not necessary for deployment)
+.git/
+
+# Exclude development files
+.dev/
+
+# Exclude editor-specific files
+.vscode/
+
+# Exclude test files
+__tests__/
+
+# Exclude documentation files
+docs/
