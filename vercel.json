@@ -1,4 +1,15 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build"
+    },
+    {
+      "src": "ISCG7420_Assignment_2/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
   "routes": [
     {
       "src": "/static/(.*)",
@@ -13,9 +24,7 @@
       "dest": "frontend/build/index.html"
     }
   ],
-  "build": {
-    "env": {
-      "REACT_APP_API_URL": "/api"
-    }
+  "env": {
+    "REACT_APP_API_URL": "/api"
   }
 }
