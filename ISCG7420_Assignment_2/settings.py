@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'gradebook',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +49,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000', '.vercel.app',  # Add your React frontend URL
 ]
 
 ROOT_URLCONF = 'ISCG7420_Assignment_2.urls'
@@ -81,8 +88,19 @@ WSGI_APPLICATION = 'ISCG7420_Assignment_2.wsgi.application'
 # }
 
 DATABASES = {
-    'default': dj_database_url.config(default="postgres://default:fZ2JqtOw4LiK@ep-noisy-pond-a7niwaao.ap-southeast-2.aws.neon.tech:5432/verceldb?sslmode=require")
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'ep-noisy-pond-a7niwaao-pooler.ap-southeast-2.aws.neon.tech',
+        'PORT': '5432',
+        'NAME': 'verceldb',
+        'USER': 'default',
+        'PASSWORD': 'fZ2JqtOw4LiK',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

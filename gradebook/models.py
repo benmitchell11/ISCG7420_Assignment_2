@@ -37,6 +37,4 @@ class StudentEnrolment(models.Model):
     enrol_time = models.DateTimeField(auto_now_add=True)
     grade_time = models.DateTimeField(auto_now=True, null=True)
     classID = models.ForeignKey(Class, on_delete=models.CASCADE)
-from django.db import models
 
-# Create your models here.
