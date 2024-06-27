@@ -6,7 +6,7 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "myproject/wsgi.py/$1"
+      "dest": "ISCG7420_Assignment_2/wsgi.py/$1"
     },
     {
       "src": "/(.*)",
