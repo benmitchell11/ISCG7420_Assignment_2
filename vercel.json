@@ -1,15 +1,4 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build"
-    },
-    {
-      "src": "myproject/wsgi.py",
-      "use": "@vercel/python"
-    }
-  ],
   "routes": [
     {
       "src": "/static/(.*)",
@@ -23,6 +12,10 @@
       "src": "/(.*)",
       "dest": "frontend/build/index.html"
     }
-  ]
-
+  ],
+  "build": {
+    "env": {
+      "REACT_APP_API_URL": "/api"
+    }
+  }
 }
