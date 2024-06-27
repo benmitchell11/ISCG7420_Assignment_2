@@ -24,14 +24,9 @@
       "dest": "frontend/build/index.html"
     }
   ],
-  "env": {
-    "DATABASE_URL": "@your-vercel-postgresql-url",
-    "SECRET_KEY": "@your-django-secret-key",
-    "VERCEL_URL": "@project-url"
-  },
   "build": {
     "env": {
       "REACT_APP_API_URL": "/api"
-    },
+    }
   }
 }
