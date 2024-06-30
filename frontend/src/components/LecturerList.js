@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {Link} from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const LecturerList = () => {
   const [lecturers, setLecturers] = useState([]);
@@ -14,7 +14,6 @@ const LecturerList = () => {
       } catch (error) {
         setError('Failed to fetch lecturers');
       }
-      console.log(lecturers)
     };
 
     fetchLecturers();
@@ -36,19 +35,40 @@ const LecturerList = () => {
           </tr>
         </thead>
         <tbody>
-          {lecturers.map((lecturer) => (
-              console.log(lecturer),
-            <tr key={lecturer.user.id}>
-              <td>{lecturer.user.id}</td>
-              <td>{lecturer.user.username}</td>
-              <td>{lecturer.dob}</td>
-              <td>{lecturer.course.name}</td>
-              <td><Link to={`/lecturers/${lecturer.user.id}`}>View Details</Link></td>
-            </tr>
+          {lecturers.map(lecturer => (
+            <LecturerRow key={lecturer.user.id} lecturerData={lecturer} />
           ))}
         </tbody>
       </table>
     </div>
+  );
+};
+
+const LecturerRow = ({ lecturerData }) => {
+  const [courseName, setCourseName] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/courses/${lecturerData.course}/`);
+        setCourseName(response.data.name);
+      } catch (error) {
+        setError('Failed to fetch course');
+      }
+    };
+
+    fetchCourse();
+  }, [lecturerData.course]);
+
+  return (
+    <tr>
+      <td>{lecturerData.user.id}</td>
+      <td>{lecturerData.user.username}</td>
+      <td>{lecturerData.dob}</td>
+      <td>{courseName}</td>
+      <td><Link to={`/lecturers/${lecturerData.user.id}`}>View Details</Link></td>
+    </tr>
   );
 };
 

@@ -6,6 +6,7 @@ const ViewClass = () => {
   const { classId } = useParams();
   const navigate = useNavigate();
   const [classData, setClassData] = useState({});
+  const [lecturer, setLecturer] = useState({});
   const [lecturers, setLecturers] = useState([]);
   const [students, setStudents] = useState([]);
   const [enrolledStudents, setEnrolledStudents] = useState([]);
@@ -30,12 +31,27 @@ const ViewClass = () => {
 
     const fetchLecturers = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/lecturers/?course=${classData.course && classData.course.id}`);
+        const response = await axios.get(`http://localhost:8000/api/lecturers/get_by_course/?course=${classData.course}`);
         setLecturers(response.data);
       } catch (error) {
         console.error('Failed to fetch lecturers:', error);
       }
     };
+
+   const fetchLecturer = async () => {
+  try {
+    if (classData.lecturer) {
+      const response = await axios.get(`http://localhost:8000/api/lecturers/${classData.lecturer}/`);
+      setLecturer(response.data);
+    } else {
+      setLecturer({});
+    }
+  } catch (error) {
+    console.log(lecturer)
+    console.error('Failed to fetch lecturer:', error);
+    setError('Failed to fetch lecturer');
+  }
+};
 
     const fetchStudents = async () => {
       try {
@@ -47,21 +63,23 @@ const ViewClass = () => {
     };
 
      const fetchEnrolledStudents = async () => {
-        try {
-          const enrollmentResponse = await axios.get(`http://localhost:8000/api/enrollments/?classID=${classId}`);
-          const enrollments = enrollmentResponse.data;
-          const studentIds = enrollments.map(enrollment => enrollment.student);
-          const studentPromises = studentIds.map(async studentId => {
-            const studentResponse = await axios.get(`http://localhost:8000/api/students/${studentId}/`);
-            return studentResponse.data;
-          });
-          const students = await Promise.all(studentPromises);
-          setEnrolledStudents(students);
-          console.log(unenrolledStudents)
-        } catch (error) {
-          setError('Failed to fetch enrolled students');
-        }
-      };
+      try {
+        const enrollmentResponse = await axios.get(`http://localhost:8000/api/enrollments/?classID=${classId}`);
+        const enrollments = enrollmentResponse.data;
+        const studentIds = enrollments.map(enrollment => enrollment.student);
+        const studentPromises = studentIds.map(async studentId => {
+          const studentResponse = await axios.get(`http://localhost:8000/api/students/${studentId}/`);
+          const studentData = studentResponse.data;
+          const enrollmentData = enrollments.find(enrollment => enrollment.student === studentId);
+          return { ...studentData, grade: enrollmentData.grade };
+        });
+        const students = await Promise.all(studentPromises);
+        setEnrolledStudents(students);
+        console.log(students);
+      } catch (error) {
+        setError('Failed to fetch enrolled students');
+      }
+    };
 
      const fetchUnenrolledStudents = async () => {
   try {
@@ -85,6 +103,7 @@ const ViewClass = () => {
     fetchStudents();
     fetchClass();
     fetchLecturers();
+    fetchLecturer();
   }, [classId, classData.course]);
 
   const handleDelete = async () => {
@@ -98,7 +117,7 @@ const ViewClass = () => {
 
   const assignLecturer = async (lecturerId) => {
     try {
-      await axios.put(`http://localhost:8000/api/classes/${classId}/`, { lecturer: lecturerId });
+      await axios.put(`http://localhost:8000/api/classes/${classId}/`, { lecturer: lecturerId, course: classData.course, number: classData.number, name: classData.name, semester: classData.semester });
       const response = await axios.get(`http://localhost:8000/api/classes/${classId}/`);
       setClassData(response.data);
     } catch (error) {
@@ -145,42 +164,57 @@ const ViewClass = () => {
       <p><strong>Course:</strong> {classData.course && classData.course.name}</p>
       <p><strong>Name:</strong> {classData.name}</p>
       {!classData.lecturer ? (
-        <div>
-          <p><strong>Assign Lecturer:</strong></p>
-          <select onChange={(e) => assignLecturer(e.target.value)} defaultValue="">
-            <option value="" disabled>Select Lecturer</option>
-            {lecturers.map(lecturer => (
-              <option key={lecturer.user.id} value={lecturer.user.id}>
-                {lecturer.user.first_name} {lecturer.user.last_name}
-              </option>
-            ))}
-          </select>
-        </div>
-      ) : (
-        <p><strong>Lecturer:</strong> {classData.lecturer.user.first_name} {classData.lecturer.user.last_name}</p>
-      )}
+  <div>
+    <p><strong>Assign Lecturer:</strong></p>
+    <select onChange={(e) => assignLecturer(e.target.value)} defaultValue="">
+      <option value="" disabled>Select Lecturer</option>
+      {lecturers.map(lecturer => (
+        <option key={lecturer.id} value={lecturer.id}>
+          {lecturer.user.first_name} {lecturer.user.last_name}
+        </option>
+      ))}
+    </select>
+  </div>
+) : (
+  <div>
+    {lecturer.user && (
+      <p><strong>Lecturer:</strong> {lecturer.user.first_name} {lecturer.user.last_name}</p>
+    )}
+  </div>
+)}
+
+
+
 
       <p><strong>Students:</strong></p>
       <table>
         <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Grade</th>
-            <th>Remove</th>
-          </tr>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Grade</th>
+          <th>Remove</th>
+        </tr>
         </thead>
         <tbody>
-          {enrolledStudents.map(student => (
+        {enrolledStudents.map(student => (
             <tr key={student.user.id}>
               <td>{student.user.first_name}</td>
               <td>{student.user.last_name}</td>
               <td>{student.user.email}</td>
-              <td>Assign Grade</td>
-              <td><button>Remove from class</button></td>
+              <td>
+                {student.grade ? (
+                    <span>{student.grade}</span>
+                ) : (
+                    <Link to={`/assigngrade/${classData.id}/${student.id}`}>Assign Grade</Link>
+                )}
+              </td>
+              <td>
+                <button>Remove from class</button>
+              </td>
             </tr>
-          ))}
+        ))}
         </tbody>
       </table>
       <div>
@@ -188,9 +222,9 @@ const ViewClass = () => {
         <select onChange={(e) => enrollStudent(e.target.value)} defaultValue="">
           <option value="" disabled>Select Student</option>
           {unenrolledStudents.map(student => (
-            <option key={student.id} value={student.id}>
-              {student.user.first_name} {student.user.last_name}
-            </option>
+              <option key={student.id} value={student.id}>
+                {student.user.first_name} {student.user.last_name}
+              </option>
           ))}
         </select>
       </div>

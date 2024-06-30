@@ -22,6 +22,14 @@ import EditStudent from "./components/EditStudent";
 import EditLecturer from "./components/EditLecturer";
 import EditSemester from "./components/EditSemester";
 import EditCourse from "./components/EditCourse";
+import AdminLogin from "./components/AdminLogin";
+import AdminMenu from "./components/AdminMenu";
+import LecturerLogin from "./components/LecturerLogin";
+import LecturerMenu from "./components/LecturerMenu";
+import StudentLogin from "./components/StudentLogin";
+import StudentMenu from "./components/StudentMenu";
+import AssignGrade from "./components/AssignGrade";
+import LecturerClasses from "./components/LecturerClasses";
 
 function App() {
   return (
@@ -49,6 +57,14 @@ function App() {
         <Route path="/students/:studentId/edit" element={<EditStudent />} />
         <Route path="/semesters/:semesterId/edit" element={<EditSemester />} />
         <Route path="/lecturers/:lecturerId/edit" element={<EditLecturer />} />
+        <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route path="/adminmenu" element={<AdminMenu />} />
+        <Route path="/lecturerlogin" element={<LecturerLogin />} />
+        <Route path="/lecturermenu" element={<LecturerMenu />} />
+        <Route path="/studentlogin" element={<StudentLogin />} />
+        <Route path="/studentmenu" element={<StudentMenu />} />
+        <Route path="/assigngrade/:classId/:studentId" element={<AssignGrade />} />
+        <Route path="/lecturerclasses" element={<LecturerClasses />} />
       </Routes>
     </BrowserRouter>
   );
