@@ -31,15 +31,17 @@ const AdminLogin = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Username:</label>
-                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required/>
                 </div>
                 <div>
                     <label>Password:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
                 <button type="submit">Login</button>
                 {error && <p>{error}</p>}
             </form>
+            <p>Admin Login: Admin</p>
+            <p>Admin Password: Admin123</p>
         </div>
     );
 };

@@ -40,6 +40,8 @@ const StudentLogin = () => {
                 <button type="submit">Login</button>
                 {error && <p>{error}</p>}
             </form>
+            <p>Student Login: student@student.com</p>
+            <p>Student Password: Student123</p>
         </div>
     );
 };
